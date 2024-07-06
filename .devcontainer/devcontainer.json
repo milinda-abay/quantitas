@@ -44,9 +44,9 @@
 				"ms-python.python",
 				"ms-python.vscode-pylance",
 				"ms-toolsai.jupyter",
-				"ms-toolsai.datawrangler",
-				"sourcery.sourcery",
-				"tabnine.tabnine-vscode"
+				"ms-toolsai.datawrangler"
+				// "sourcery.sourcery",
+				// "tabnine.tabnine-vscode"
 			],
 			"settings": {
 				"terminal.integrated.env.linux": {
