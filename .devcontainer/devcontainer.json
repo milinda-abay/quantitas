@@ -29,9 +29,9 @@
 	// Use 'postCreateCommand' to run commands after the container is created.
 	"postCreateCommand": "pip install -r requirements.txt",
 	// Change this path as required to point to the local data files.
-	// "mounts": [
-	// 	"source=C:\\Users\\maba0001\\projects\\binance-public-data\\data\\input\\btcusdt_binance,target=/workspaces/quantitas/data/input/btcusdt_binance,type=bind,consistency=cached"
-	//   ],
+	"mounts": [
+		"source=F:\\data,target=/workspaces/quantitas/data,type=bind,consistency=cached"
+	  ],
 	// Configure tool-specific properties.
 	"customizations": {
 		"vscode": {
@@ -44,9 +44,9 @@
 				"ms-python.python",
 				"ms-python.vscode-pylance",
 				"ms-toolsai.jupyter",
-				"ms-toolsai.datawrangler"
-				// "sourcery.sourcery",
-				// "tabnine.tabnine-vscode"
+				"ms-toolsai.datawrangler",
+				"sourcery.sourcery",
+				"tabnine.tabnine-vscode"
 			],
 			"settings": {
 				"terminal.integrated.env.linux": {
