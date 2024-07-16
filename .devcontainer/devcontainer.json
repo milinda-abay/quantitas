@@ -4,43 +4,57 @@
 	"name": "Rapids",
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
 	// "image": "rapidsai/base:24.04a-cuda12.2-py3.11",
-	"build":{"dockerfile":"Dockerfile"},
-
-	"runArgs": [ "--gpus", "all","--rm","-it","--shm-size=1g","--ulimit", "memlock=-1","--ulimit","stack=67108864"],
-
+	"build": {
+		"dockerfile": "Dockerfile"
+	},
+	"runArgs": [
+		"--gpus",
+		"all",
+		"--rm",
+		"-it",
+		"--shm-size=1g",
+		"--ulimit",
+		"memlock=-1",
+		"--ulimit",
+		"stack=67108864"
+	],
 	// Features to add to the dev container. More info: https://containers.dev/features.
-	"features": {"ghcr.io/devcontainers/features/git:1":{},
-	"ghcr.io/devcontainers/features/git-lfs:1": {}},
-
+	"features": {
+		"ghcr.io/devcontainers/features/git:1": {},
+		"ghcr.io/devcontainers/features/git-lfs:1": {}
+	},
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
-
 	"overrideCommand": false,
-
 	// Use 'postCreateCommand' to run commands after the container is created.
 	"postCreateCommand": "pip install -r requirements.txt",
-
+	// Change this path as required to point to the local data files.
+	"mounts": [
+		"source=F:\\data,target=/workspaces/quantitas/data,type=bind,consistency=cached"
+	  ],
 	// Configure tool-specific properties.
-	"customizations": {"vscode":{
-		"workspaceFolder": "/workspaces/quantitas",
-		"extensions": [
-			"ms-azuretools.vscode-docker",
-			"ms-dotnettools.vscode-dotnet-runtime",
-			"ms-python.black-formatter",
-			"ms-python.debugpy",
-			"ms-python.python",
-			"ms-python.vscode-pylance",
-			"ms-toolsai.datawrangler",
-			"sourcery.sourcery",
-			"tabnine.tabnine-vscode"
-		],
-		"settings": {
-			"terminal.integrated.env.linux": {
-				"PYTHONPATH": "${workspaceFolder}"
+	"customizations": {
+		"vscode": {
+			"workspaceFolder": "/workspaces/quantitas",
+			"extensions": [
+				"ms-azuretools.vscode-docker",
+				"ms-dotnettools.vscode-dotnet-runtime",
+				"ms-python.black-formatter",
+				"ms-python.debugpy",
+				"ms-python.python",
+				"ms-python.vscode-pylance",
+				"ms-toolsai.jupyter",
+				"ms-toolsai.datawrangler",
+				"sourcery.sourcery",
+				"tabnine.tabnine-vscode"
+			],
+			"settings": {
+				"terminal.integrated.env.linux": {
+					"PYTHONPATH": "${workspaceFolder}"
+				}
 			}
 		}
-	}}
-
+	}
 	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
 	// "remoteUser": "root"
 }

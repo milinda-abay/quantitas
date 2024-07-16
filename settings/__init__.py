@@ -1,3 +1,2 @@
-import os
-
-COMPUTER = os.getenv("COMPUTER")
+from .constants import *
+from .folders import *
