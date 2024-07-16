@@ -46,7 +46,8 @@
 				"ms-toolsai.jupyter",
 				"ms-toolsai.datawrangler",
 				"sourcery.sourcery",
-				"tabnine.tabnine-vscode"
+				"tabnine.tabnine-vscode",
+				"eamodio.gitlens"
 			],
 			"settings": {
 				"terminal.integrated.env.linux": {
