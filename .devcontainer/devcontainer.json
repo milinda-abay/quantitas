@@ -27,7 +27,7 @@
 	// "forwardPorts": [],
 	"overrideCommand": false,
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "pip install -r requirements.txt",
+	"postCreateCommand": "./.devcontainer/postCreateCommand.sh",
 	// Change this path as required to point to the local data files.
 	"mounts": [
 		"source=F:\\data,target=/workspaces/quantitas/data,type=bind,consistency=cached"
