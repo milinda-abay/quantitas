@@ -3,7 +3,7 @@
 # This is a simple script to download klines by given parameters.
 
 symbols=( "BTCUSDT") # add symbols here to download
-intervals=("1m" )
+intervals=("1d" )
 years=( "2024")
 months=(01 02 03 04 05 06 07 08 09 10 11 12)
 

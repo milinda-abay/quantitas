@@ -52,7 +52,9 @@
 			"settings": {
 				"terminal.integrated.env.linux": {
 					"PYTHONPATH": "${workspaceFolder}"
-				}
+				},
+				"editor.fontFamily": "Fira Code",
+				"editor.fontLigatures": true
 			}
 		}
 	}
