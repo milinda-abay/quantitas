@@ -47,7 +47,9 @@
 				"ms-toolsai.datawrangler",
 				"sourcery.sourcery",
 				"tabnine.tabnine-vscode",
-				"eamodio.gitlens"
+				"eamodio.gitlens",
+				"GitHub.copilot-chat",
+				"GitHub.copilot"
 			],
 			"settings": {
 				"terminal.integrated.env.linux": {
