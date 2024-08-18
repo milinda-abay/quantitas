@@ -1,28 +1,32 @@
 from settings import DATA_PATH
-import cudf
 import pandas as pd
-import talib
-from matplotlib import pyplot as plt
 import altair as alt
 import numpy as np
 import pymc as pm
+from pytensor.tensor.variable import TensorVariable
 
-
+# Enable Altair renderers
 alt.renderers.enable("browser")
 alt.data_transformers.disable_max_rows()
-BTCUSDT_1M = DATA_PATH / "output" / "BTCUSDT_1m.parquet"
 
-df = pd.read_parquet(BTCUSDT_1M)
-df = df.sort_values(by="open_time").reset_index(drop=True)
-df["date"] = pd.to_datetime(df["open_time"], unit="ms")
-df.set_index("date", inplace=True)
 
-df = df[:10000]
-btc_data = df["close"]
+# Load and preprocess data
+def load_data(file_path, nrows=None):
+    df = pd.read_parquet(file_path)
+    df = df.sort_values(by="open_time").reset_index(drop=True)
+    df["date"] = pd.to_datetime(df["open_time"], unit="ms")
+    df.set_index("date", inplace=True)
+    if nrows:
+        df = df[:nrows]
+    return df
 
 
 # MACD Implementation
 def macd(data, fast_period, slow_period, signal_period):
+    """
+    Calculate MACD, signal line, and MACD histogram.
+    """
+
     fast_ema = data.ewm(span=fast_period, adjust=False).mean()
     slow_ema = data.ewm(span=slow_period, adjust=False).mean()
     macd_line = fast_ema - slow_ema
@@ -33,10 +37,11 @@ def macd(data, fast_period, slow_period, signal_period):
 
 # Backtesting
 def backtest(data, macd_params, window):
+    """
+    Perform backtesting using MACD strategy.
+    """
     fast_period, slow_period, signal_period = macd_params
-    macd_line, signal_line, macd_histogram = macd(
-        data, fast_period, slow_period, signal_period
-    )
+    macd_line, signal_line, macd_histogram = macd(data, *macd_params)
     data = data.iloc[max(fast_period, slow_period, signal_period) :]
     macd_histogram = macd_histogram.iloc[max(fast_period, slow_period, signal_period) :]
     signals = (macd_histogram > 0).astype(int).diff().fillna(0)
@@ -47,45 +52,46 @@ def backtest(data, macd_params, window):
 
 
 # Bayesian Optimization with pymc3
-with pm.Model() as model:
-    fast_period = pm.DiscreteUniform("fast_period", lower=5, upper=30)
-    slow_period = pm.DiscreteUniform("slow_period", lower=20, upper=100)
-    signal_period = pm.DiscreteUniform("signal_period", lower=5, upper=20)
-    window = pm.DiscreteUniform("window", lower=30, upper=365)
+def optimize_macd(data):
+    """
+    Optimize MACD parameters using Bayesian Optimization.
+    """
+    with pm.Model() as model:
+        data = pm.Data("data", data)
+        fast_period: TensorVariable = pm.DiscreteUniform(
+            "fast_period", lower=5, upper=30
+        )
+        slow_period: TensorVariable = pm.DiscreteUniform(
+            "slow_period", lower=20, upper=100
+        )
+        signal_period: TensorVariable = pm.DiscreteUniform(
+            "signal_period", lower=5, upper=20
+        )
+        window: TensorVariable = pm.DiscreteUniform("window", lower=30, upper=365)
 
-    # Define deterministic objective function to be used for sampling
-    def compute_objective(fast_period, slow_period, signal_period, window):
-        macd_params = (int(fast_period), int(slow_period), int(signal_period))
-        return backtest(btc_data, macd_params, int(window))
+        # Define deterministic objective function to be used for sampling
+        def compute_objective(fast_period, slow_period, signal_period, window):
+            fast_period_int = int(pm.draw(fast_period))
+            slow_period_int = int(pm.draw(slow_period))
+            signal_period_int = int(pm.draw(signal_period))
+            window_int = int(pm.draw(window))
+            macd_params = fast_period, slow_period, signal_period
 
-    returns = pm.Deterministic(
-        "returns", compute_objective(fast_period, slow_period, signal_period, window)
-    )
+            return backtest(data, macd_params, window)
 
-    # Likelihood (optional; adjust based on your needs)
-    likelihood = pm.Normal("likelihood", mu=returns, sd=1, observed=returns)
+        # Add the objective function to the model
+        p = pm.Deterministic(
+            name="objective",
+            var=compute_objective(fast_period, slow_period, signal_period, window),
+        )
 
-    # Sample from the posterior
-    trace = pm.sample(1000, tune=2000, cores=4)
+    return model
 
-# Extract integer values from the trace
-fast_period_samples = trace["fast_period"]
-slow_period_samples = trace["slow_period"]
-signal_period_samples = trace["signal_period"]
-window_samples = trace["window"]
 
-# Use the sampled parameters with pandas
-for i in range(10):  # Example: use a few samples
-    fast = int(fast_period_samples[i])
-    slow = int(slow_period_samples[i])
-    signal = int(signal_period_samples[i])
-    window = int(window_samples[i])
-
-    # Calculate MACD with sampled parameters
-    macd_line, signal_line, macd_histogram = macd(btc_data, fast, slow, signal)
-
-    # Backtest with sampled parameters
-    result = backtest(btc_data, (fast, slow, signal), window)
-    print(
-        f"Sample {i}: Fast: {fast}, Slow: {slow}, Signal: {signal}, Window: {window}, Result: {result}"
-    )
+# Main execution
+if __name__ == "__main__":
+    BTCUSDT_1M = DATA_PATH / "output" / "BTCUSDT_1m.parquet"
+    df = load_data(BTCUSDT_1M, nrows=10000)
+    btc_data = df["close"]
+    model = optimize_macd(btc_data)
+    np.random.rand(20)
