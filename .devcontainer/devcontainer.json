@@ -45,8 +45,6 @@
 				"ms-python.vscode-pylance",
 				"ms-toolsai.jupyter",
 				"ms-toolsai.datawrangler",
-				"sourcery.sourcery",
-				"tabnine.tabnine-vscode",
 				"eamodio.gitlens",
 				"GitHub.copilot-chat",
 				"GitHub.copilot"
