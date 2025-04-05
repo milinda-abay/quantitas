@@ -17,7 +17,7 @@ def get_destination_dir(file_url, folder=None):
 
 
 def get_download_url(file_url):
-    return f"{BASE_URL}{file_url}"
+    return f"{BASE_HISTORICAL_DATA_URL}{file_url}"
 
 
 def get_all_symbols(type):

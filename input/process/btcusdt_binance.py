@@ -1,4 +1,4 @@
-from settings import DAILY_KLINES, MONTHLY_KLINES, BASE_PATH, KLINE_COL_NAMES
+ from settings import DAILY_KLINES, MONTHLY_KLINES, BASE_PATH, KLINE_COL_NAMES
 from utils.functions import lower_underscore
 import zipfile
 import pandas as pd
@@ -34,7 +34,7 @@ for file in files:
 files = BTCUSDT_MONTHLY_1M.glob("*.csv")
 
 df = pd.concat(map(read_csv, files)).convert_dtypes()
-
+ 
 df.to_parquet(
     BASE_PATH / "data" / "output" / "BTCUSDT_1m.parquet"
 )
