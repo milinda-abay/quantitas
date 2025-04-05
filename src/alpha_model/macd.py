@@ -1,4 +1,5 @@
 from settings import DATA_PATH
+import cudf 
 import pandas as pd
 import altair as alt
 import numpy as np
@@ -95,3 +96,6 @@ if __name__ == "__main__":
     btc_data = df["close"]
     model = optimize_macd(btc_data)
     np.random.rand(20)
+
+
+
