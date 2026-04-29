@@ -1,4 +1,4 @@
- from settings import DAILY_KLINES, MONTHLY_KLINES, BASE_PATH, KLINE_COL_NAMES
+from settings import DAILY_KLINES, MONTHLY_KLINES, BASE_PATH, KLINE_COL_NAMES
 from utils.functions import lower_underscore
 import zipfile
 import pandas as pd
@@ -24,21 +24,16 @@ pd.concat(map(pd.read_csv, files)).to_parquet(
 )
 
 
-
 files = BTCUSDT_MONTHLY_1M.glob("*.zip")
 
 for file in files:
-    with zipfile.ZipFile(str(file), 'r') as zip_ref:
+    with zipfile.ZipFile(str(file), "r") as zip_ref:
         zip_ref.extractall(BTCUSDT_MONTHLY_1M)
 
 files = BTCUSDT_MONTHLY_1M.glob("*.csv")
 
 df = pd.concat(map(read_csv, files)).convert_dtypes()
- 
-df.to_parquet(
-    BASE_PATH / "data" / "output" / "BTCUSDT_1m.parquet"
-)
+
+df.to_parquet(BASE_PATH / "data" / "output" / "BTCUSDT_1m.parquet")
 
 pd.read_parquet(BASE_PATH / "data" / "output" / "BTCUSDT_1m.parquet")
-
-
