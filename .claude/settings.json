@@ -1,0 +1,18 @@
+{
+  "statusLine": {
+    "type": "command",
+    "command": "bash .claude/statusline-command.sh"
+  },
+  "effortLevel": "medium",
+  "permissions": {
+    "allow": [
+      "Bash(git config *)",
+      "Bash(ssh -T git@github.com)",
+      "Bash(git ls-remote *)",
+      "Bash(git pull *)",
+      "Bash(conda activate *)",
+      "Bash(python *)",
+      "Bash(claude doctor *)"
+    ]
+  }
+}
