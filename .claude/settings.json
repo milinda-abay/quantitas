@@ -12,7 +12,8 @@
       "Bash(git pull *)",
       "Bash(conda activate *)",
       "Bash(python *)",
-      "Bash(claude doctor *)"
+      "Bash(claude doctor *)",
+      "Read(//home/rapids/.claude/**)"
     ]
   }
 }

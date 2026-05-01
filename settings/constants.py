@@ -1,7 +1,6 @@
 from datetime import date, datetime
 
-from settings.enums import Intervals, Months, Years
-
+from settings.enums import Intervals, Months, TradingType, Years
 
 WHITELIST_CHARS = {letter: letter for letter in "abcdefghijklmnopqrstuvwxyz1234567890"}
 
@@ -16,9 +15,14 @@ DAILY_INTERVALS = [
 
 PERIOD_START_DATE = "2020-01-01"
 BASE_HISTORICAL_DATA_URL = "https://data.binance.vision/"
-START_DATE = date(Years.Y2017, Months.JAN, 1)
+START_DATE = date(Years.Y2017.value, Months.JAN.value, 1)
 END_DATE = datetime.date(datetime.now())
 SYMBOLS = ["BTCUSDT"]
+
+YEARS = [str(year.value) for year in Years]
+MONTHS = [month.value for month in Months]
+INTERVALS = [interval.value for interval in Intervals]
+TRADING_TYPE = [t.value for t in TradingType]
 
 
 KLINE_COL_NAMES = [

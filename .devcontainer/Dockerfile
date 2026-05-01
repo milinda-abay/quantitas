@@ -8,7 +8,7 @@ RUN wget https://packages.microsoft.com/config/ubuntu/$(lsb_release -rs)/package
     apt-get install -y dotnet-runtime-8.0
 RUN ["sh", "-c", "conda install -c conda-forge -y libta-lib"]
 USER rapids
-
+RUN curl -fsSL https://claude.ai/install.sh | bash
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh
 ENV PATH="/root/.local/bin:$PATH"
 RUN ["sh", "-c", "pip install ccxt python-binance ipykernel TA-Lib altair"]
