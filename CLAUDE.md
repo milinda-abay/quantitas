@@ -21,7 +21,10 @@ Required env variable: `BINANCE_API_KEY` (consumed via `settings/env_variables.p
 python src/alpha_model/indicators.py
 python src/alpha_model/macd.py
 
-# Process raw Binance data into parquet
+# Process ALL tickers and intervals into parquet (preferred)
+python input/process/etl/pipeline.py
+
+# Legacy single-ticker processor (BTCUSDT 1s/1m only)
 python input/process/btcusdt_binance.py
 
 # Download historical kline data from Binance
@@ -46,7 +49,13 @@ src/alpha_model/
   web_socket.py    # Binance WebSocket streams (both websockets and websocket-client libs)
 
 input/process/
-  btcusdt_binance.py  # Reads raw CSV/zip klines from data/spot/, merges, writes parquet to data/output/
+  etl/               # SOLID ETL pipeline — processes all tickers × intervals
+    pipeline.py      # Entry point: wires components, purges .zip.* partials, runs loop
+    discovery.py     # KlineDiscovery: scans data/spot/ for (ticker, interval) pairs → KlineSource
+    readers.py       # KlineReader ABC + CsvKlineReader + ZipKlineReader + CompositeKlineReader
+    transformer.py   # KlineTransformer: concat, dedup on open_time, sort, convert_dtypes
+    writer.py        # KlineWriter: writes data/output/{TICKER}_{INTERVAL}.parquet
+  btcusdt_binance.py # Legacy: hardcoded BTCUSDT 1s/1m processor (superseded by etl/)
 
 utils/
   functions.py     # lower_underscore(): sanitises column names for parquet output
@@ -59,7 +68,7 @@ data/              # Not in git; mounted from host. Structure: spot/daily|monthl
 ## Data Flow
 
 1. **Ingest**: `binance_public_data/download-kline.py` fetches zip/csv files from `data.binance.vision` into `data/spot/`.
-2. **Process**: `input/process/btcusdt_binance.py` unpacks zips, concatenates CSVs with typed column names (from `KLINE_COL_NAMES`), and writes `data/output/BTCUSDT_1m.parquet` / `BTCUSDT_1s.parquet`.
+2. **Process**: `input/process/etl/pipeline.py` auto-discovers all `(ticker, interval)` combos under `data/spot/`, merges daily CSVs and monthly CSVs/ZIPs, deduplicates on `open_time`, and writes one `data/output/{TICKER}_{INTERVAL}.parquet` per combo (~40 files across 25 tickers). ZIPs are read in-memory; `.zip.*` partial-download files are purged first.
 3. **Model**: Alpha model files load parquet via `pd.read_parquet`, compute indicators, and generate ±1 signals.
 
 ## Key Conventions

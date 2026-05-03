@@ -1,9 +1,4 @@
 {
-  "statusLine": {
-    "type": "command",
-    "command": "bash .claude/statusline-command.sh"
-  },
-  "effortLevel": "medium",
   "permissions": {
     "allow": [
       "Bash(git config *)",
@@ -15,5 +10,21 @@
       "Bash(claude doctor *)",
       "Read(//home/rapids/.claude/**)"
     ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "bash .claude/statusline-command.sh"
+  },
+  "extraKnownMarketplaces": {
+    "superpowers-dev": {
+      "source": {
+        "source": "github",
+        "repo": "obra/superpowers"
+      }
+    }
+  },
+  "effortLevel": "medium",
+  "enabledPlugins": {
+    "superpowers@superpowers-dev": true
   }
 }
